@@ -36,14 +36,18 @@ class _HomePageState extends State<HomePage> {
   TextEditingController valueController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   TextEditingController numberController = TextEditingController();
+  TextEditingController intervalController = TextEditingController();
+
   String valueDisplay = "";
   String timeDisplay = "";
   String numberDisplay = "";
+  String intervalDisplay = "";
 
   RegExp digitValidator = RegExp(r"^\d+(?:-\d+)?$");
   bool isANumber = true;
 
-  Time selectedTime = Time.segundos;
+  Time selectedInit = Time.segundos;
+  Time selectedInterval = Time.segundos;
 
   void setValidator(valid) {
     setState(() {
@@ -62,10 +66,22 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+
           Card(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: const AwesomeCarousel(),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  child: const Text(
+                    "1) Deslize para selecionar o aplicativo desejado",
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                const AwesomeCarousel()
+              ],
+            ),
           ),
           Card(
             shape: RoundedRectangleBorder(
@@ -77,6 +93,13 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    child: const Text(
+                        "2) Insira o valor da transação e a quantidade de notificações",
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -115,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10)),
-                              hintText: "Número de notificações",
+                              hintText: "Quantidade",
                               errorText: isANumber ? null : "Apenas números"),
                           controller: numberController,
                         ),
@@ -123,6 +146,13 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    child: const Text(
+                      "3) Selecione a unidade de tempo e insira o tempo de espera",
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
                   SegmentedButton(
                     segments: const <ButtonSegment<Time>>[
                       ButtonSegment(
@@ -144,10 +174,10 @@ class _HomePageState extends State<HomePage> {
                                 RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ))),
-                    selected: <Time>{selectedTime},
+                    selected: <Time>{selectedInit},
                     onSelectionChanged: (Set<Time> newSelection) {
                       setState(() {
-                        selectedTime = newSelection.first;
+                        selectedInit = newSelection.first;
                       });
                     },
                   ),
@@ -165,12 +195,65 @@ class _HomePageState extends State<HomePage> {
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10)),
-                        hintText: "Tempo para notificação",
+                        hintText: "Começar em... ",
                         errorText: isANumber ? null : "Apenas números"),
                     controller: timeController,
                   ),
                   const SizedBox(height: 10),
-
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    child: const Text(
+                      "4) Selecione a unidade de tempo e insira o tempo de intervalo entre as notificações",
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  SegmentedButton(
+                    segments: const <ButtonSegment<Time>>[
+                      ButtonSegment(
+                        value: Time.segundos,
+                        label: Text('Segundos'),
+                      ),
+                      ButtonSegment(
+                        value: Time.minutos,
+                        label: Text('Minutos'),
+                      ),
+                      ButtonSegment(
+                        value: Time.horas,
+                        label: Text('Horas'),
+                      ),
+                    ],
+                    style: ButtonStyle(
+                        shape:
+                        MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ))),
+                    selected: <Time>{selectedInterval},
+                    onSelectionChanged: (Set<Time> newSelection) {
+                      setState(() {
+                        selectedInterval = newSelection.first;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    onChanged: (inputValue) {
+                      if (inputValue.isEmpty ||
+                          digitValidator.hasMatch(inputValue)) {
+                        setValidator(true);
+                      } else {
+                        setValidator(false);
+                      }
+                    },
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        hintText: "Intervalo",
+                        errorText: isANumber ? null : "Apenas números"),
+                    controller: intervalController,
+                  ),
+                  const SizedBox(height: 10)
                 ],
               ),
             ),
