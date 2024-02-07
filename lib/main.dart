@@ -33,26 +33,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _formKey = GlobalKey<FormState>();
+
   TextEditingController valueController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   TextEditingController numberController = TextEditingController();
   TextEditingController intervalController = TextEditingController();
 
-  String valueDisplay = "";
-  String timeDisplay = "";
-  String numberDisplay = "";
-  String intervalDisplay = "";
-
-  RegExp digitValidator = RegExp(r"^\d+(?:-\d+)?$");
-  bool isANumber = true;
-
   Time selectedInit = Time.segundos;
   Time selectedInterval = Time.segundos;
 
-  void setValidator(valid) {
-    setState(() {
-      isANumber = valid;
-    });
+  @override
+  initState() {
+    super.initState();
   }
 
   @override
@@ -61,204 +54,218 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-
-          Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  child: const Text(
-                    "1) Deslize para selecionar o aplicativo desejado",
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-                const AwesomeCarousel()
-              ],
-            ),
-          ),
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Container(
-              constraints: const BoxConstraints(maxHeight: 600.0),
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              margin: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+              child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(5),
+                    padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                     child: const Text(
-                        "2) Insira o valor da transação e a quantidade de notificações",
+                      "1) Deslize para selecionar o aplicativo desejado",
                       textAlign: TextAlign.start,
                     ),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 10,
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          onChanged: (inputValue) {
-                            if (inputValue.isEmpty ||
-                                digitValidator.hasMatch(inputValue)) {
-                              setValidator(true);
-                            } else {
-                              setValidator(false);
-                            }
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              hintText: "Valor da transação",
-                              errorText: isANumber ? null : "Apenas números"),
-                          controller: valueController,
-                        ),
-                      ),
-                      const Spacer(flex: 1),
-                      Expanded(
-                        flex: 10,
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          onChanged: (inputValue) {
-                            if (inputValue.isEmpty ||
-                                digitValidator.hasMatch(inputValue)) {
-                              setValidator(true);
-                            } else {
-                              setValidator(false);
-                            }
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              hintText: "Quantidade",
-                              errorText: isANumber ? null : "Apenas números"),
-                          controller: numberController,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    child: const Text(
-                      "3) Selecione a unidade de tempo e insira o tempo de espera",
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  SegmentedButton(
-                    segments: const <ButtonSegment<Time>>[
-                      ButtonSegment(
-                        value: Time.segundos,
-                        label: Text('Segundos'),
-                      ),
-                      ButtonSegment(
-                        value: Time.minutos,
-                        label: Text('Minutos'),
-                      ),
-                      ButtonSegment(
-                        value: Time.horas,
-                        label: Text('Horas'),
-                      ),
-                    ],
-                    style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ))),
-                    selected: <Time>{selectedInit},
-                    onSelectionChanged: (Set<Time> newSelection) {
-                      setState(() {
-                        selectedInit = newSelection.first;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    onChanged: (inputValue) {
-                      if (inputValue.isEmpty ||
-                          digitValidator.hasMatch(inputValue)) {
-                        setValidator(true);
-                      } else {
-                        setValidator(false);
-                      }
-                    },
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        hintText: "Começar em... ",
-                        errorText: isANumber ? null : "Apenas números"),
-                    controller: timeController,
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    child: const Text(
-                      "4) Selecione a unidade de tempo e insira o tempo de intervalo entre as notificações",
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  SegmentedButton(
-                    segments: const <ButtonSegment<Time>>[
-                      ButtonSegment(
-                        value: Time.segundos,
-                        label: Text('Segundos'),
-                      ),
-                      ButtonSegment(
-                        value: Time.minutos,
-                        label: Text('Minutos'),
-                      ),
-                      ButtonSegment(
-                        value: Time.horas,
-                        label: Text('Horas'),
-                      ),
-                    ],
-                    style: ButtonStyle(
-                        shape:
-                        MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ))),
-                    selected: <Time>{selectedInterval},
-                    onSelectionChanged: (Set<Time> newSelection) {
-                      setState(() {
-                        selectedInterval = newSelection.first;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    onChanged: (inputValue) {
-                      if (inputValue.isEmpty ||
-                          digitValidator.hasMatch(inputValue)) {
-                        setValidator(true);
-                      } else {
-                        setValidator(false);
-                      }
-                    },
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        hintText: "Intervalo",
-                        errorText: isANumber ? null : "Apenas números"),
-                    controller: intervalController,
-                  ),
-                  const SizedBox(height: 10)
+                  const Spacer()
                 ],
               ),
             ),
-          )
-        ],
+            Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const AwesomeCarousel()),
+            Form(
+              key: _formKey,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Container(
+                  constraints: const BoxConstraints(maxHeight: 2000.0),
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        child: const Text(
+                          "2) Insira o valor da transação e a quantidade de notificações",
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 10,
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              validator: (inputValue) {
+                                if (inputValue == null || inputValue.isEmpty) {
+                                  return "Campo obrigatório";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                hintText: "Valor da transação",
+                              ),
+                              controller: valueController,
+                            ),
+                          ),
+                          const Spacer(flex: 1),
+                          Expanded(
+                            flex: 10,
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              validator: (inputValue) {
+                                if (inputValue == null || inputValue.isEmpty) {
+                                  return "Campo obrigatório";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                hintText: "Quantidade",
+                              ),
+                              controller: numberController,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        child: const Text(
+                          "3) Selecione a unidade de tempo e insira a espera para a primeira notificação",
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                      SegmentedButton(
+                        segments: const <ButtonSegment<Time>>[
+                          ButtonSegment(
+                            value: Time.segundos,
+                            label: Text('Segundos'),
+                          ),
+                          ButtonSegment(
+                            value: Time.minutos,
+                            label: Text('Minutos'),
+                          ),
+                          ButtonSegment(
+                            value: Time.horas,
+                            label: Text('Horas'),
+                          ),
+                        ],
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ))),
+                        selected: <Time>{selectedInit},
+                        onSelectionChanged: (Set<Time> newSelection) {
+                          setState(() {
+                            selectedInit = newSelection.first;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        validator: (inputValue) {
+                          if (inputValue == null || inputValue.isEmpty) {
+                            return "Campo obrigatório";
+                          } else {
+                            return null;
+                          }
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          hintText: "Começar em... ",
+                        ),
+                        controller: timeController,
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        child: const Text(
+                          "4) Selecione a unidade de tempo e insira o intervalo entre as notificações",
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                      SegmentedButton(
+                        segments: const <ButtonSegment<Time>>[
+                          ButtonSegment(
+                            value: Time.segundos,
+                            label: Text('Segundos'),
+                          ),
+                          ButtonSegment(
+                            value: Time.minutos,
+                            label: Text('Minutos'),
+                          ),
+                          ButtonSegment(
+                            value: Time.horas,
+                            label: Text('Horas'),
+                          ),
+                        ],
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ))),
+                        selected: <Time>{selectedInterval},
+                        onSelectionChanged: (Set<Time> newSelection) {
+                          setState(() {
+                            selectedInterval = newSelection.first;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        validator: (inputValue) {
+                          if (inputValue == null || inputValue.isEmpty) {
+                            return "Campo obrigatório";
+                          } else {
+                            return null;
+                          }
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          hintText: "Intervalo",
+                        ),
+                        controller: intervalController,
+                      ),
+                      const SizedBox(height: 10),
+                      OutlinedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Processando dados')),
+                            );
+                          }
+                        },
+                        child: const Text("Iniciar processo"),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

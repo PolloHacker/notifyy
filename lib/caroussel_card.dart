@@ -44,9 +44,12 @@ class _AwesomeCarouselState extends State<AwesomeCarousel> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           constraints: const BoxConstraints(maxWidth: 128.0, maxHeight: 128.0),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0)),
+          padding: const EdgeInsets.all(10.0),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -55,6 +58,7 @@ class _AwesomeCarouselState extends State<AwesomeCarousel> {
                 child: Container(
                   key: ValueKey<String>(data[_currentPage % data.length]![1]),
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
                     image: DecorationImage(
                       image: AssetImage(data[_currentPage % data.length]![0]),
                       fit: BoxFit.cover,
@@ -62,21 +66,24 @@ class _AwesomeCarouselState extends State<AwesomeCarousel> {
                   ),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(
-                      sigmaX: 15,
-                      sigmaY: 15,
+                      sigmaX: 10,
+                      sigmaY: 10,
                     ),
                     child: Container(
-                      color: Colors.black.withOpacity(0.2),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.black.withOpacity(0.2)),
                     ),
                   ),
                 ),
               ),
               FractionallySizedBox(
                 heightFactor: 0.55,
+                widthFactor: 0.9,
                 child: PageView.builder(
                   onPageChanged: (int page) {
                     setState(() {
-                        _currentPage = page;
+                      _currentPage = page;
                     });
                   },
                   itemBuilder: (BuildContext context, int index) {
@@ -89,7 +96,7 @@ class _AwesomeCarouselState extends State<AwesomeCarousel> {
                             image: AssetImage(data[index % data.length]![0]),
                             fit: BoxFit.cover,
                           ),
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.white.withOpacity(0.3),
